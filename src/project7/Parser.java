@@ -44,19 +44,21 @@ public class Parser {
         if(arithmeticCommands.contains(currentCommand)){
             return CommandType.C_ARITHMETIC;
         }else if (memoryAccessCommands.contains(currentCommand)){
-                if(currentCommand.contains(PUSH))
-                    return CommandType.C_PUSH;
-                else if (currentCommand.contains(POP))
-                    return CommandType.C_POP;
-                else
-                    throw new Exception("current command does not contain supported command");
+            return currentCommand.contains(PUSH) ? CommandType.C_PUSH : CommandType.C_POP;
         }else {
             throw new Exception("Could not determine command type, currentCommand: " + currentCommand);
         }
     }
 
-    private String arg1(){
-        return null;
+    private String arg1() throws Exception {
+        CommandType commandType = commandType();
+        if (commandType == CommandType.C_ARITHMETIC){
+            return currentCommand.trim();
+        }else if (commandType == CommandType.C_PUSH || commandType == CommandType.C_POP){
+            return currentCommand.split(" ")[1];// the second element would be the arg 1 in this case
+        }else{
+            return currentCommand.trim();// logical commands
+        }
     }
 
     private boolean isInstruction(String potentialInstruction){
