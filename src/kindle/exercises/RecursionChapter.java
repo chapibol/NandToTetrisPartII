@@ -5,9 +5,22 @@ public class RecursionChapter {
     public static void main (String [] args){
         int base = 3;
         int power = 10;
-        System.out.println(base + " to the " + power + " power: " + powerOf(12, base));
-        System.out.println("Sum of : " + nSum(21));
+
+        xMethod3(1234567);
     }
+
+
+    /**
+     * 18.8 what is wrong with this
+     * @param n
+     */
+    public static void xMethod3(double n) {
+        if (n != 0) {
+            System.out.print(n);
+            xMethod3(n / 10);
+        }
+    }
+
 
 
     /**
