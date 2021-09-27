@@ -6,8 +6,8 @@ public class KaratsubaMultiplication {
 
     public static void main(String[] args){
 
-        BigInteger x = new BigInteger("56");
-        BigInteger y = new BigInteger("12");
+        BigInteger x = new BigInteger("134");
+        BigInteger y = new BigInteger("4");
 
         System.out.println("Java's BigInteger Multiplication product: "  + x.multiply(y));
 
@@ -49,8 +49,8 @@ public class KaratsubaMultiplication {
         BigInteger adPlusBcByGaussTrick = aPlusBTimesCPlusD.subtract(acResult).subtract(bdResult);
 
 
-
-        BigInteger acShifted = acResult.multiply(tenRaisedTo(n));
+        // Since the a and b parts of the number str are being given more digits when splitting an odd number of digits number we need to shift acResult by 10 ^ n -1
+        BigInteger acShifted = acResult.multiply(tenRaisedTo(n % 2 == 0 ? n : n - 1));
         BigInteger gaussTrickShifted = adPlusBcByGaussTrick.multiply(tenRaisedTo(n / 2));
 
         return acShifted.add(gaussTrickShifted).add(bdResult);
