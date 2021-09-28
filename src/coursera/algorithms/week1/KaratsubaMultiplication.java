@@ -16,7 +16,8 @@ public class KaratsubaMultiplication {
 
 
     /**
-     * 134 * 46, not working correctly
+     * Karatsuba multiplication recursive implementation. It will take two BigInteger numbers x and y.
+     * It will then split these numbers into a, b, c, d
      * @param x
      * @param y
      * @return
@@ -50,7 +51,7 @@ public class KaratsubaMultiplication {
 
 
         // Since the a and b parts of the number str are being given more digits when splitting an odd number of digits number we need to shift acResult by 10 ^ n -1
-        BigInteger acShifted = acResult.multiply(tenRaisedTo(n % 2 == 0 ? n : n - 1));
+        BigInteger acShifted = acResult.multiply(tenRaisedTo(n % 2 == 0 ? n : n - 1));// if odd use n - 1. n otherwise.
         BigInteger gaussTrickShifted = adPlusBcByGaussTrick.multiply(tenRaisedTo(n / 2));
 
         return acShifted.add(gaussTrickShifted).add(bdResult);
