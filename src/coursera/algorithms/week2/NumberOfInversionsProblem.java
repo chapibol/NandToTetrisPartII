@@ -1,25 +1,78 @@
 package coursera.algorithms.week2;
 
+import java.util.Arrays;
+
 public class NumberOfInversionsProblem {
 
     public static void main(String [] args ){
 
-        int [] numbers = {2, 1, 4, 3, 10, 0};
+        int [] numbers = {2, 1, 4, 3};
 
         mergeSort(numbers);
+
+        System.out.println(Arrays.toString(numbers));
 
     }
 
     /**
+     * [2], [3], [1], [0]
+     *  0    1    2    3
+     * Method that will return the number of inversions in an array numbers
+     * @param a the array to search the inversions in
+     * @return number of inversions
+     */
+    public static int sortAndCount(int [] a){
+        return sortAndCount(a, 0, new int[a.length], 0, a.length - 1);
+    }
+
+    public static int sortAndCount(int [] a, int n, int [] temp, int leftStart, int rightEnd){
+        if(n == 1 && leftStart >= rightEnd){
+            return 0;
+        }else{
+            int middle = (leftStart + rightEnd) / 2;
+            int firstHalfSize = middle + 1;
+            int leftInversions = sortAndCount(a, n, temp, leftStart, middle);
+            n += leftInversions;
+            int rightInversions = sortAndCount(a, n, temp,  middle + 1, rightEnd); // n - firstHalfSize = secondHalfSize
+            n += rightInversions;
+
+            n += mergeAndCountSplitInversions(a, n, temp, leftStart, rightEnd);
+
+            return n;
+        }
+    }
+
+    public static int mergeAndCountSplitInversions(int [] a, int n, int [] temp, int leftStart, int rightEnd){
+
+        int leftEnd = (leftStart + rightEnd) / 2;
+        int rightStart = leftEnd + 1;
+
+        int leftIndex = leftStart;
+        int rightIndex = rightStart;
+
+        int size = rightEnd - leftStart + 1;
+
+        for(int k = leftStart; k < size; k++){
+            if(a[leftIndex] <= a[rightIndex]){
+                temp[k] = a[leftIndex++];
+            }else{
+                n += leftEnd - leftIndex; // add up the remaining elements in first half of the array as those are inversions.
+                temp[k] = a[rightIndex++];
+            }
+        }
+        // TODO finish implementing this.
+    }
+
+    /**
      *
-     * [2], [1], [4], [3], [10], [0]
+     * [2], [1], [4], [3]
+     *  0    1    2    3
+     * 3rd recursive call leftStart = 0   rightEnd = 1
      *
-     * leftStart = 0   rightEnd = 3
      *
      * middle = 1
      *
      */
-
     public static void mergeSort(int [] array){
         mergeSort(array, new int [array.length] ,0, array.length - 1);
     }
@@ -28,7 +81,7 @@ public class NumberOfInversionsProblem {
         if(leftStart >= rightEnd)
             return;
 
-        int middle = (leftStart + rightEnd) / 2; //
+        int middle = (leftStart + rightEnd) / 2; // middle
         mergeSort(array, temp, leftStart, middle); // left half
         mergeSort(array, temp, middle + 1, rightEnd); // right half
         mergeHalves(array, temp, leftStart, rightEnd);
@@ -37,7 +90,7 @@ public class NumberOfInversionsProblem {
     public static void mergeHalves(int [] array, int [] temp, int leftStart, int rightEnd){
         int leftEnd = (rightEnd + leftStart) / 2;
         int rightStart = leftEnd + 1;
-        int size = rightEnd - leftStart + 1;
+        int size = rightEnd - leftStart + 1;// incrementing because we are representing the size not the pointers
 
         int left = leftStart;
         int right = rightStart;
@@ -47,37 +100,21 @@ public class NumberOfInversionsProblem {
             if(array[left] <= array[right]){
                 temp[index] = array[left];
                 left++;
-            }else{
+            }else{ // this would expose an inversion btws
                 temp[index] = array[right];
                 right++;
             }
             index++;
         }
 
-        System.arraycopy(array, left, temp, index, leftEnd - left + 1);
+        System.arraycopy(array, left, temp, index, leftEnd - left + 1);// copying over the remaining elements from the left half
         System.arraycopy(array, right, temp, index, rightEnd  - right + 1);
-        System.arraycopy(temp ,leftStart, array, leftStart, size);
+        System.arraycopy(temp , leftStart, array, leftStart, size);
     }
 
 
 
-    /**
-     * Method that will return the number of inversions in an array numbers
-     * @param a the array to search the inversions in
-     * @param n the length of this array
-     * @return number of inversions
-     */
-    public static int sortAndCount(int [] a, int n){
-        if(n == 1){
-            return 0;
-        }else{
-            int x = 0; // number of inversions in first half
-            int y = 0; // number of inversions in second half
-            int [] b = new int[n/2];
-            int [] c = new int[n/2];
-            return 1;
-        }
-    }
+
 
 
 }
