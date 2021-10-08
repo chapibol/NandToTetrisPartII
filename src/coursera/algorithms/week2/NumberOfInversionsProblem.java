@@ -5,7 +5,7 @@ public class NumberOfInversionsProblem {
 
     public static void main(String [] args ){
 
-        int [] numbers = {6,5,4, 3, 2, 1 }; // number of inversions here is (2, 1), (3, 1) answer should be 2 3 + 2
+        int [] numbers = {15,14,13,12,11,10,9,8,7,6,5,4,3,2,1}; // number of inversions here is (2, 1), (3, 1) answer should be 105
 
         System.out.println("Number of Inversions: " + sortAndCount(numbers));
 
@@ -13,26 +13,24 @@ public class NumberOfInversionsProblem {
     }
 
     /**
-     * [6], [5], [4], [3], [2], [1]
-     *  0    1    2    3    4    5
      * Method that will return the number of inversions in an array numbers
      * @param a the array to search the inversions in
      * @return number of inversions
+     *
+     * * [4], [5], [6], [1], [2], [3]
+     *    0    1    2    3    4    5
      */
     public static int sortAndCount(int [] a){
         return sortAndCount(a, 0, new int[a.length], 0, a.length - 1);
     }
 
     public static int sortAndCount(int [] a, int n, int [] temp, int leftStart, int rightEnd){
-        if(leftStart >= rightEnd){ // n == 1 &&
+        if(leftStart >= rightEnd){
             return 0;
         }else{
             int middle = (leftStart + rightEnd) / 2;
-
-            n += sortAndCount(a, n, temp, leftStart, middle);
-            n += sortAndCount(a, n, temp,  middle + 1, rightEnd);
-
-           return mergeAndCountSplitInversions(a, n, temp, leftStart, rightEnd);
+            // sort and count inversions in the left half, sort and count inversions on the right half then merge both and count the split inversions
+           return sortAndCount(a, n, temp, leftStart, middle) + sortAndCount(a, n, temp,  middle + 1, rightEnd) + mergeAndCountSplitInversions(a, n, temp, leftStart, rightEnd);
         }
     }
 
@@ -45,7 +43,7 @@ public class NumberOfInversionsProblem {
 
         int size = rightEnd - leftStart + 1;
 
-        for(int k = leftStart; k < rightEnd; k++){
+        for(int k = leftStart; k < (leftStart + size); k++){
             if(rightIndex > rightEnd){ // if right is exhausted then just copy over remaining elements from left
                 if(leftIndex <= leftEnd){
                     temp[k]  = a[leftIndex++];
