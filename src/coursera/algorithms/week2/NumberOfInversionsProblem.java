@@ -1,22 +1,20 @@
 package coursera.algorithms.week2;
 
-import java.util.Arrays;
 
 public class NumberOfInversionsProblem {
 
     public static void main(String [] args ){
 
-        int [] numbers = {2, 1, 4, 3};
+        int [] numbers = {6,5,4, 3, 2, 1 }; // number of inversions here is (2, 1), (3, 1) answer should be 2 3 + 2
 
-        mergeSort(numbers);
+        System.out.println("Number of Inversions: " + sortAndCount(numbers));
 
-        System.out.println(Arrays.toString(numbers));
 
     }
 
     /**
-     * [2], [3], [1], [0]
-     *  0    1    2    3
+     * [6], [5], [4], [3], [2], [1]
+     *  0    1    2    3    4    5
      * Method that will return the number of inversions in an array numbers
      * @param a the array to search the inversions in
      * @return number of inversions
@@ -26,24 +24,19 @@ public class NumberOfInversionsProblem {
     }
 
     public static int sortAndCount(int [] a, int n, int [] temp, int leftStart, int rightEnd){
-        if(n == 1 && leftStart >= rightEnd){
+        if(leftStart >= rightEnd){ // n == 1 &&
             return 0;
         }else{
             int middle = (leftStart + rightEnd) / 2;
-            int firstHalfSize = middle + 1;
-            int leftInversions = sortAndCount(a, n, temp, leftStart, middle);
-            n += leftInversions;
-            int rightInversions = sortAndCount(a, n, temp,  middle + 1, rightEnd); // n - firstHalfSize = secondHalfSize
-            n += rightInversions;
 
-            n += mergeAndCountSplitInversions(a, n, temp, leftStart, rightEnd);
+            n += sortAndCount(a, n, temp, leftStart, middle);
+            n += sortAndCount(a, n, temp,  middle + 1, rightEnd);
 
-            return n;
+           return mergeAndCountSplitInversions(a, n, temp, leftStart, rightEnd);
         }
     }
 
     public static int mergeAndCountSplitInversions(int [] a, int n, int [] temp, int leftStart, int rightEnd){
-
         int leftEnd = (leftStart + rightEnd) / 2;
         int rightStart = leftEnd + 1;
 
@@ -52,21 +45,29 @@ public class NumberOfInversionsProblem {
 
         int size = rightEnd - leftStart + 1;
 
-        for(int k = leftStart; k < size; k++){
-            if(a[leftIndex] <= a[rightIndex]){
-                temp[k] = a[leftIndex++];
-            }else{
-                n += leftEnd - leftIndex; // add up the remaining elements in first half of the array as those are inversions.
-                temp[k] = a[rightIndex++];
+        for(int k = leftStart; k < rightEnd; k++){
+            if(rightIndex > rightEnd){ // if right is exhausted then just copy over remaining elements from left
+                if(leftIndex <= leftEnd){
+                    temp[k]  = a[leftIndex++];
+                }
+            }else if(leftIndex <= leftEnd){
+                if(a[leftIndex] <= a[rightIndex]){
+                    temp[k] = a[leftIndex++];
+                }else{
+                    n += (leftEnd - leftIndex) + 1; // add up the remaining elements in first half of the array as those are inversions.
+                    temp[k] = a[rightIndex++];
+                }
             }
         }
-        // TODO finish implementing this.
+        System.arraycopy(temp, leftStart, a, leftStart, size);
+
+        return n;
     }
 
     /**
      *
-     * [2], [1], [4], [3]
-     *  0    1    2    3
+     * [2], [1], [4]
+     *  0    1    2
      * 3rd recursive call leftStart = 0   rightEnd = 1
      *
      *
