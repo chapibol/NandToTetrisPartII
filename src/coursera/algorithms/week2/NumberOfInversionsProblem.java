@@ -5,7 +5,7 @@ public class NumberOfInversionsProblem {
 
     public static void main(String [] args ){
 
-        int [] numbers = {15,14,13,12,11,10,9,8,7,6,5,4,3,2,1}; // number of inversions here is (2, 1), (3, 1) answer should be 105
+        int [] numbers = {16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1}; // number of inversions here is (2, 1), (3, 1) answer should be 105
 
         System.out.println("Number of Inversions: " + sortAndCount(numbers));
 
