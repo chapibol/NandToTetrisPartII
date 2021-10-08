@@ -1,15 +1,23 @@
 package coursera.algorithms.week2;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
 
 public class NumberOfInversionsProblem {
 
-    public static void main(String [] args ){
+    public static void main(String [] args ) throws FileNotFoundException {
+        int [] numbers = new int[100000];
 
-        int [] numbers = {16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1}; // number of inversions here is (2, 1), (3, 1) answer should be 105
+        File file = new File("files/IntegerArray.txt");
+        Scanner fileScanner = new Scanner(file);
+
+        int index = 0;
+        while (fileScanner.hasNext()){
+            numbers[index++] = fileScanner.nextInt();
+        }
 
         System.out.println("Number of Inversions: " + sortAndCount(numbers));
-
-
     }
 
     /**
@@ -20,11 +28,11 @@ public class NumberOfInversionsProblem {
      * * [4], [5], [6], [1], [2], [3]
      *    0    1    2    3    4    5
      */
-    public static int sortAndCount(int [] a){
+    public static long sortAndCount(int [] a){
         return sortAndCount(a, 0, new int[a.length], 0, a.length - 1);
     }
 
-    public static int sortAndCount(int [] a, int n, int [] temp, int leftStart, int rightEnd){
+    public static long sortAndCount(int [] a, long n, int [] temp, int leftStart, int rightEnd){
         if(leftStart >= rightEnd){
             return 0;
         }else{
@@ -34,7 +42,7 @@ public class NumberOfInversionsProblem {
         }
     }
 
-    public static int mergeAndCountSplitInversions(int [] a, int n, int [] temp, int leftStart, int rightEnd){
+    public static long mergeAndCountSplitInversions(int [] a, long n, int [] temp, int leftStart, int rightEnd){
         int leftEnd = (leftStart + rightEnd) / 2;
         int rightStart = leftEnd + 1;
 
