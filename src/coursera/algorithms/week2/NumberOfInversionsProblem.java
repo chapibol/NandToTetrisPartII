@@ -118,10 +118,4 @@ public class NumberOfInversionsProblem {
         System.arraycopy(array, right, temp, index, rightEnd  - right + 1);
         System.arraycopy(temp , leftStart, array, leftStart, size);
     }
-
-
-
-
-
-
 }
