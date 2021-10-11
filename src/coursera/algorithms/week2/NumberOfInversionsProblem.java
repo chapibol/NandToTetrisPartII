@@ -7,15 +7,15 @@ import java.util.Scanner;
 public class NumberOfInversionsProblem {
 
     public static void main(String [] args ) throws FileNotFoundException {
-        int [] numbers = new int[100000];
+        int [] numbers = {1,3,5,2,4,6};
 
-        File file = new File("files/IntegerArray.txt");
-        Scanner fileScanner = new Scanner(file);
-
-        int index = 0;
-        while (fileScanner.hasNext()){
-            numbers[index++] = fileScanner.nextInt();
-        }
+//        File file = new File("files/IntegerArray.txt");
+//        Scanner fileScanner = new Scanner(file);
+//
+//        int index = 0;
+//        while (fileScanner.hasNext()){
+//            numbers[index++] = fileScanner.nextInt();
+//        }
 
         System.out.println("Number of Inversions: " + sortAndCount(numbers));
     }
@@ -25,7 +25,7 @@ public class NumberOfInversionsProblem {
      * @param a the array to search the inversions in
      * @return number of inversions
      *
-     * * [4], [5], [6], [1], [2], [3]
+     * * [1], [3], [5], [2], [4], [6]  there should be 3 inversions here
      *    0    1    2    3    4    5
      */
     public static long sortAndCount(int [] a){
@@ -52,11 +52,11 @@ public class NumberOfInversionsProblem {
         int size = rightEnd - leftStart + 1;
 
         for(int k = leftStart; k < (leftStart + size); k++){
-            if(rightIndex > rightEnd){ // if right is exhausted then just copy over remaining elements from left
-                if(leftIndex <= leftEnd){
-                    temp[k]  = a[leftIndex++];
-                }
-            }else if(leftIndex <= leftEnd){
+            if(rightIndex > rightEnd && leftIndex <= leftEnd){ // if right is exhausted then just copy over from left
+                temp[k] = a[leftIndex++];
+            }else if (leftIndex > leftEnd){// if left half is exhausted then just copy over remaining elements from right
+                temp[k] = a[rightIndex++];
+            }else {
                 if(a[leftIndex] <= a[rightIndex]){
                     temp[k] = a[leftIndex++];
                 }else{
