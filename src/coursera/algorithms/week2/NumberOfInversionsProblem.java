@@ -17,7 +17,7 @@ public class NumberOfInversionsProblem {
             numbers[index++] = fileScanner.nextInt();
         }
 
-
+        fileScanner.close();
 
         System.out.println("Number of Inversions: " + sortAndCount(numbers));
     }
