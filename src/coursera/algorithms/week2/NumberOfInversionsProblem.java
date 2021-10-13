@@ -7,15 +7,17 @@ import java.util.Scanner;
 public class NumberOfInversionsProblem {
 
     public static void main(String [] args ) throws FileNotFoundException {
-        int [] numbers = {1,3,5,2,4,6};
+        int [] numbers = new int[100000];
 
-//        File file = new File("files/IntegerArray.txt");
-//        Scanner fileScanner = new Scanner(file);
-//
-//        int index = 0;
-//        while (fileScanner.hasNext()){
-//            numbers[index++] = fileScanner.nextInt();
-//        }
+        File file = new File("files/IntegerArray.txt");
+        Scanner fileScanner = new Scanner(file);
+
+        int index = 0;
+        while (fileScanner.hasNext()){
+            numbers[index++] = fileScanner.nextInt();
+        }
+
+
 
         System.out.println("Number of Inversions: " + sortAndCount(numbers));
     }
