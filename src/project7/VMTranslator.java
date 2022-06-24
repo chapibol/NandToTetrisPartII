@@ -1,24 +1,152 @@
 package project7;
 
-import java.util.TreeMap;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class VMTranslator {
 
     public static void main(String [] args){
+        List<Map<String, Boolean>> blocks = new ArrayList<>();
+        String [] reqs = new String [] {"gym", "pool", "school", "store"};
+        Map<String, Boolean> block0 = new HashMap<>();
+        block0.put("gym", true);
+        block0.put("pool", false);
+        block0.put("school", true);
+        block0.put("store", false);
 
-        TreeMap<Integer, String> treeMap = new TreeMap<>();
+        Map<String, Boolean> block1 = new HashMap<>();
+        block1.put("gym", false);
+        block1.put("pool", false);
+        block1.put("school", false);
+        block1.put("store", false);
 
-        // Mapping string values to int keys
-        // using put() method
-        treeMap.put(25, "Welcomes");
-        treeMap.put(20, "Geeks");
-        treeMap.put(15, "4");
-        treeMap.put(10, "Geeks");
-        treeMap.put(30, "You");
+        Map<String, Boolean> block2 = new HashMap<>();
+        block2.put("gym", false);
+        block2.put("pool", false);
+        block2.put("school", true);
+        block2.put("store", false);
 
-        // Printing the elements of TreeMap
-        System.out.println("TreeMap: " + treeMap);
-        System.out.println("TreeMap's first entry: " + treeMap.firstEntry().getValue());
+        Map<String, Boolean> block3 = new HashMap<>();
+        block3.put("gym", false);
+        block3.put("pool", false);
+        block3.put("school", false);
+        block3.put("store", false);
+
+        Map<String, Boolean> block4 = new HashMap<>();
+        block4.put("gym", false);
+        block4.put("pool", false);
+        block4.put("school", false);
+        block4.put("store", true);
+
+        Map<String, Boolean> block5 = new HashMap<>();
+        block5.put("gym", true);
+        block5.put("pool", false);
+        block5.put("school", false);
+        block5.put("store", false);
+
+        Map<String, Boolean> block6 = new HashMap<>();
+        block6.put("gym", false);
+        block6.put("pool", false);
+        block6.put("school", false);
+        block6.put("store", false);
+
+        Map<String, Boolean> block7 = new HashMap<>();
+        block7.put("gym", false);
+        block7.put("pool", false);
+        block7.put("school", false);
+        block7.put("store", false);
+
+        Map<String, Boolean> block8 = new HashMap<>();
+        block8.put("gym", false);
+        block8.put("pool", false);
+        block8.put("school", false);
+        block8.put("store", false);
+
+        Map<String, Boolean> block9 = new HashMap<>();
+        block9.put("gym", false);
+        block9.put("pool", false);
+        block9.put("school", true);
+        block9.put("store", false);
+
+        Map<String, Boolean> block10 = new HashMap<>();
+        block10.put("gym", false);
+        block10.put("pool", true);
+        block10.put("school", false);
+        block10.put("store", false);
+
+        blocks.add(0, block0);
+        blocks.add(1, block1);
+        blocks.add(2, block2);
+        blocks.add(3, block3);
+        blocks.add(4, block4);
+        blocks.add(5, block5);
+        blocks.add(6, block6);
+        blocks.add(7, block7);
+        blocks.add(8, block8);
+        blocks.add(9, block9);
+        blocks.add(10, block10);
+
+        System.out.println("Most efficient block is block: " + apartmentHunting(blocks, reqs));
+
+    }
+
+    public static int apartmentHunting(List<Map<String, Boolean>> blocks, String[] reqs) {
+        int [] mostOptimalLocationCandidates = new int []{-1, Integer.MAX_VALUE};// index of the block with the most optimal distance
+
+        for (int i = 0; i < blocks.size(); i++){// i = 2
+            Map<String, Boolean> currentBlock = blocks.get(i);
+
+            // save the distances calculated to the parallel list of distances
+            int currentBlockMaxDistance = 0;// the index would be i at this point
+
+            List<String> missingReqs = Stream.of(reqs).filter(req -> !currentBlock.get(req)).collect(Collectors.toList());
+
+            List<String> foundBuildingsToRemove = new ArrayList<>();
+            // loop to left of current block to search to figure out distances
+
+            for (int left = i - 1; left >= 0 && !missingReqs.isEmpty(); left--){
+                Map<String, Boolean> previousBlock = blocks.get(left);
+
+                for(String missingReqBuilding : missingReqs){
+                    if(previousBlock.get(missingReqBuilding)){
+                        foundBuildingsToRemove.add(missingReqBuilding);
+                        // update the max distance for the block
+                        int distanceToFoundBuilding = i - left;
+                        if(distanceToFoundBuilding > currentBlockMaxDistance){
+                            currentBlockMaxDistance = distanceToFoundBuilding;
+                        }
+                    }
+                }
+                foundBuildingsToRemove.forEach(missingReqs::remove);
+                foundBuildingsToRemove.clear();
+            }
+
+            // loop right to look for buildings
+            for(int right = i + 1; right < blocks.size() && !missingReqs.isEmpty(); right++){
+                Map<String, Boolean> nextBlock = blocks.get(right);
+                for(String missingReqBuilding : missingReqs){
+                    if(nextBlock.get(missingReqBuilding)){
+                        foundBuildingsToRemove.add(missingReqBuilding);
+                        int distanceToFoundBuilding = right - i;
+                        if(distanceToFoundBuilding > currentBlockMaxDistance){
+                            currentBlockMaxDistance = distanceToFoundBuilding;
+                        }
+                    }
+                }
+                // update the list of missing buildings for this block
+                foundBuildingsToRemove.forEach(missingReqs::remove);
+                foundBuildingsToRemove.clear();
+            }
+            if(currentBlockMaxDistance < mostOptimalLocationCandidates[1]){ // looking for the min max distance now and recording it's location
+                mostOptimalLocationCandidates[0] = i;
+                mostOptimalLocationCandidates[1] = currentBlockMaxDistance;
+            }
+        }
+        return mostOptimalLocationCandidates[0];
     }
 
     public static int maxMirror(int[] nums) {
@@ -40,7 +168,6 @@ public class VMTranslator {
                     maxMirrorCount = tempMaxSoFar;
                 }
             }
-
         }
         return maxMirrorCount;
     }
