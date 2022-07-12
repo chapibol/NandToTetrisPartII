@@ -1,9 +1,6 @@
 package project7;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -90,63 +87,58 @@ public class VMTranslator {
         blocks.add(9, block9);
         blocks.add(10, block10);
 
-        System.out.println("Most efficient block is block: " + apartmentHunting(blocks, reqs));
+        int [] primitiveIntArray = new int [blocks.size()];
+        Map<String, int []> mindDistancesToRes = new HashMap<>();
 
+        Stream.of(reqs).forEach(req -> {
+            int [] minDistances = mapToIntArray(req, 2);
+            mindDistancesToRes.put(req, minDistances);
+        });
+
+        List<int []> minDistances = mindDistancesToRes.values().stream().collect(Collectors.toList());
+
+        System.out.println("mindDistancesToRes: " );
+        minDistances.forEach(distanceArray -> System.out.println(Arrays.toString(distanceArray)));
+
+        System.out.println("primitiveIntArray is: " + Arrays.toString(primitiveIntArray));
+        System.out.println("Most efficient block is block: " + apartmentHunting(blocks, reqs));
     }
 
     public static int apartmentHunting(List<Map<String, Boolean>> blocks, String[] reqs) {
-        int [] mostOptimalLocationCandidates = new int []{-1, Integer.MAX_VALUE};// index of the block with the most optimal distance
+        int [] maxDistanceAtBlocks = new int [blocks.size()];
+        Arrays.fill(maxDistanceAtBlocks, Integer.MIN_VALUE);
 
-        for (int i = 0; i < blocks.size(); i++){// i = 2
-            Map<String, Boolean> currentBlock = blocks.get(i);
-
-            // save the distances calculated to the parallel list of distances
-            int currentBlockMaxDistance = 0;// the index would be i at this point
-
-            List<String> missingReqs = Stream.of(reqs).filter(req -> !currentBlock.get(req)).collect(Collectors.toList());
-
-            List<String> foundBuildingsToRemove = new ArrayList<>();
-            // loop to left of current block to search to figure out distances
-
-            for (int left = i - 1; left >= 0 && !missingReqs.isEmpty(); left--){
-                Map<String, Boolean> previousBlock = blocks.get(left);
-
-                for(String missingReqBuilding : missingReqs){
-                    if(previousBlock.get(missingReqBuilding)){
-                        foundBuildingsToRemove.add(missingReqBuilding);
-                        // update the max distance for the block
-                        int distanceToFoundBuilding = i - left;
-                        if(distanceToFoundBuilding > currentBlockMaxDistance){
-                            currentBlockMaxDistance = distanceToFoundBuilding;
-                        }
+        for (int i = 0; i < blocks.size(); i++){
+            for(String req: reqs){
+                int closestReqDistance = Integer.MAX_VALUE;
+                for(int j = 0 ; j < blocks.size(); j++){
+                    if(blocks.get(j).get(req)){
+                        closestReqDistance = Math.min(closestReqDistance, distanceBetween(i, j));
                     }
                 }
-                foundBuildingsToRemove.forEach(missingReqs::remove);
-                foundBuildingsToRemove.clear();
-            }
-
-            // loop right to look for buildings
-            for(int right = i + 1; right < blocks.size() && !missingReqs.isEmpty(); right++){
-                Map<String, Boolean> nextBlock = blocks.get(right);
-                for(String missingReqBuilding : missingReqs){
-                    if(nextBlock.get(missingReqBuilding)){
-                        foundBuildingsToRemove.add(missingReqBuilding);
-                        int distanceToFoundBuilding = right - i;
-                        if(distanceToFoundBuilding > currentBlockMaxDistance){
-                            currentBlockMaxDistance = distanceToFoundBuilding;
-                        }
-                    }
-                }
-                // update the list of missing buildings for this block
-                foundBuildingsToRemove.forEach(missingReqs::remove);
-                foundBuildingsToRemove.clear();
-            }
-            if(currentBlockMaxDistance < mostOptimalLocationCandidates[1]){ // looking for the min max distance now and recording it's location
-                mostOptimalLocationCandidates[0] = i;
-                mostOptimalLocationCandidates[1] = currentBlockMaxDistance;
+                maxDistanceAtBlocks[i] = Math.max(maxDistanceAtBlocks[i], closestReqDistance);
             }
         }
-        return mostOptimalLocationCandidates[0];
+        return findMinIndex(maxDistanceAtBlocks);
+    }
+
+    public static int [] mapToIntArray(String req, int b){
+        return new int [] {b};
+    }
+    public static int distanceBetween(int a, int b){
+        return Math.abs(a - b);
+    }
+
+    public static int findMinIndex(int [] array){
+        int minValue = Integer.MAX_VALUE;
+        int minIndex = -1;
+        for(int i = 0; i < array.length; i++){
+            if(array[i] < minValue){
+                minValue = array[i];
+                minIndex = i;
+            }
+        }
+        return minIndex;
     }
 
     public static int maxMirror(int[] nums) {
